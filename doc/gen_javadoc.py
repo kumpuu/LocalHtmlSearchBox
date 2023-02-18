@@ -16,6 +16,10 @@ if __name__ == '__main__':
     root_read_dir = sys.argv[1]
     if root_read_dir[-1] != r"/" or root_read_dir[-1] != "\\":
         root_read_dir = root_read_dir + "/"
+    # Generate java doc by javadoc command
+    run_cmd(r"javadoc -locale en -encoding UTF-8 -charset UTF-8 -sourcepath "
+            + r"../src ../src/main/java/com/chillingvan/docsearcher/Foooo.java ../src/main/java/com/chillingvan/docsearcher/foo/SubFoo.java"
+            + r" -subpackages com  -overview ./overview.html -d ../build/doc_java")
 
     # copy js and css to target dir
     copyfile('search.html', root_read_dir + 'search.html')
