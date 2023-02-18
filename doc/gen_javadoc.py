@@ -16,10 +16,6 @@ if __name__ == '__main__':
     root_read_dir = sys.argv[1]
     if root_read_dir[-1] != r"/" or root_read_dir[-1] != "\\":
         root_read_dir = root_read_dir + "/"
-    # Generate java doc by javadoc command
-    run_cmd(r"javadoc -locale en -encoding UTF-8 -charset UTF-8 -sourcepath "
-            + r"../src ../src/main/java/com/chillingvan/docsearcher/Foooo.java ../src/main/java/com/chillingvan/docsearcher/foo/SubFoo.java"
-            + r" -subpackages com  -overview ./overview.html -d ../build/doc_java")
 
     # copy js and css to target dir
     copyfile('search.html', root_read_dir + 'search.html')
@@ -31,7 +27,7 @@ if __name__ == '__main__':
 
     def on_read_file(path, resultArr):
         if 'html' in path:
-            url = path[path.index(root_read_dir) + len(path):]
+            url = path[path.index(root_read_dir) + len(root_read_dir):]
             url = url.replace('\\', '/')
             resultArr.extend(gendb.simple_read_one(path, url))
 
@@ -39,6 +35,7 @@ if __name__ == '__main__':
     gendb.read_files(root_read_dir + 'com/', on_read_file, result_arr)
 
     final_result_arr = []
-    gendb.remove_same(result_arr, final_result_arr)
+    gendb.remove_same(result_arr)
+    #print("Dumping result...")
     with open(database_dir + 'searchData.js', 'w') as fl:
-        fl.write("var searchData = " + json.dumps(final_result_arr))
+        fl.write("var searchData = " + json.dumps(result_arr))

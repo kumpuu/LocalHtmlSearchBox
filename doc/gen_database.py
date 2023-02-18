@@ -7,7 +7,7 @@ import sys
 
 
 def read_one_file(url, inputContent, resultArr, filterArr):
-    soup = BeautifulSoup(inputContent)
+    soup = BeautifulSoup(inputContent, features="html.parser")
     level = 0
     anchorSet = set([])
     _iterate_nodes(soup, url, level, anchorSet, resultArr, filterArr)
@@ -63,15 +63,25 @@ def _create_item(url, content):
     return makeJson
 
 
-def remove_same(srcArr, dstArr):
-    for item in srcArr:
-        is_dup = False
-        for dstItem in dstArr:
-            if item['url'] == dstItem['url'] and item['content'] == dstItem['content']:
-                is_dup = True
-                break
-        if not is_dup:
-            dstArr.append(item)
+def remove_same(srcArr):
+    def s_key(itm):
+        return itm['url']
+
+    list.sort(srcArr, key=s_key)
+
+    i = 0
+    while i < len(srcArr) - 1:
+        #print("Checking dupe: " + str(i+1) + "/" + str(len(srcArr)))
+
+        item = srcArr[i]
+        nxt_item = srcArr[i+1]
+
+        if item['url'] == nxt_item['url']:
+            if item['content'] == nxt_item['content']:
+                srcArr.pop(i+1)
+                continue
+
+        i = i +1
 
 
 def read_files(directory, on_read_file, *arg):
@@ -98,6 +108,7 @@ def simple_read_one(path, url, custom_filter_arr=[]):
     filter_arr = [not_allow_tags_filter, not_allow_content_filter, not_allow_type_filter]
     if len(custom_filter_arr) > 0:
         filter_arr.extend(custom_filter_arr)
+    #print("Reading: " + path)
     read_one_file(url, open(path, 'r', encoding='utf-8'), arr, filter_arr)
     return arr
 
