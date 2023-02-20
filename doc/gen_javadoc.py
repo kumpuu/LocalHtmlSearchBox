@@ -12,7 +12,6 @@ def run_cmd(cmd):
 
 
 if __name__ == '__main__':
-    print("")
     root_read_dir = sys.argv[1]
     if root_read_dir[-1] != r"/" or root_read_dir[-1] != "\\":
         root_read_dir = root_read_dir + "/"
@@ -36,10 +35,14 @@ if __name__ == '__main__':
             resultArr.extend(gendb.simple_read_one(path, url))
 
     result_arr = []
+    print("Reading files, may take a while")
     gendb.read_files(root_read_dir + 'com/', on_read_file, result_arr)
 
     final_result_arr = []
     gendb.remove_same(result_arr)
-    #print("Dumping result...")
+    print("Dumping results...")
     with open(database_dir + 'searchData.js', 'w') as fl:
         fl.write("var searchData = " + json.dumps(result_arr))
+        fl.close()
+
+    print("Done")

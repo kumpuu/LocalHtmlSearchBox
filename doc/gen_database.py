@@ -62,6 +62,15 @@ def _create_item(url, content):
     makeJson['content'] = content
     return makeJson
 
+def progress_bar(caption, current, total, bar_length=20):
+    fraction = current / total
+
+    arrow = int(fraction * bar_length - 1) * '-' + '>'
+    padding = int(bar_length - len(arrow)) * ' '
+
+    ending = '\n' if current == total else '\r'
+
+    print(f'{caption}: [{arrow}{padding}] {int(fraction*100)}%', end=ending)
 
 def remove_same(srcArr):
     def s_key(itm):
@@ -71,22 +80,30 @@ def remove_same(srcArr):
 
     i = 0
     while i < len(srcArr) - 1:
-        #print("Checking dupe: " + str(i+1) + "/" + str(len(srcArr)))
+        progress_bar("Checking dupes", i, len(srcArr))
 
         item = srcArr[i]
-        nxt_item = srcArr[i+1]
 
-        if item['url'] == nxt_item['url']:
-            if item['content'] == nxt_item['content']:
-                srcArr.pop(i+1)
+        j = i + 1
+        while j < len(srcArr):
+            nxt_item = srcArr[j]
+
+            if nxt_item['url'] != item['url']:
+                break
+
+            if nxt_item['content'] == item['content']:
+                srcArr.pop(j)
                 continue
+                
+            j += 1
 
-        i = i +1
+        i += 1
+
+    progress_bar("Checking dupes", 1, 1)
 
 
 def read_files(directory, on_read_file, *arg):
     _recursive_read_files(directory, on_read_file, *arg)
-
 
 def _recursive_read_files(path, on_read_fl, *arg):
     if os.path.isdir(path):
@@ -95,7 +112,6 @@ def _recursive_read_files(path, on_read_fl, *arg):
 
     else:
         on_read_fl(path, *arg)
-
 
 def simple_read_one(path, url, custom_filter_arr=[]):
     """
@@ -108,7 +124,6 @@ def simple_read_one(path, url, custom_filter_arr=[]):
     filter_arr = [not_allow_tags_filter, not_allow_content_filter, not_allow_type_filter]
     if len(custom_filter_arr) > 0:
         filter_arr.extend(custom_filter_arr)
-    #print("Reading: " + path)
     read_one_file(url, open(path, 'r', encoding='utf-8'), arr, filter_arr)
     return arr
 
