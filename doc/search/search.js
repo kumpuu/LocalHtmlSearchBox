@@ -7,6 +7,8 @@ var hitsText = document.getElementById("numHits")
 var loadlAllBtn = document.getElementById("loadAll");
 var clearBtn = document.getElementById("clear");
 
+var docFrame = document.getElementById("docFrame");
+
 var searchInput;
 var lastSearchInput;
 var workers = [];
@@ -149,22 +151,16 @@ function createSearchItem(searchContent, jsonItem) {
 
     container.addEventListener('click', ((_url) => {return (e) => {
       try{
-        var doc = document.getElementById("docFrame");
-        var cont = doc.contentDocument || doc.contentWindow.document;
+        var cont = docFrame.contentDocument || docFrame.contentWindow.document;
 
         if(_url.endsWith("package-frame.html")){
-            var packageFrame = cont.querySelector("frame[name=packageFrame]");
-            if (packageFrame){ packageFrame.src = _url; }
-            return;
-          }
-
+          var packageFrame = cont.querySelector("frame[name=packageFrame]");
+          packageFrame.src = _url;
+        }
+        else{
           var classFrame = cont.querySelector("frame[name=classFrame]");
-
-          if(classFrame){
-            classFrame.src = _url;
-            return;
-          }
-      
+          classFrame.src = _url;
+        }
       }catch(error){
         window.open(_url)
       }
@@ -178,8 +174,6 @@ function createSearchItem(searchContent, jsonItem) {
       e.target.style["max-height"] = "";
     });
 
-    //urlView.textContent = url;
-    //urlView.setAttribute('class','searchUrl');
     return container;
 }
 
@@ -226,3 +220,37 @@ function lazyAppendResults(all = false){
     loadlAllBtn.style.display = "none";
   }
 }
+
+
+var resizeBar = document.getElementById("resizeBar");
+var resizeWrapper = resizeBar.parentElement;
+var resizeTarget = document.getElementById("searchRootContainer");
+var isResizing = false;
+
+document.addEventListener('mousedown', function(e) {
+  if (e.target === resizeBar) {
+    isResizing = true;
+    docFrame.style["pointer-events"] = "none";
+  }
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (isResizing) {
+
+    var wOffLeft = resizeWrapper.offsetLeft;
+
+    // Get x-coordinate of pointer relative to container
+    // - half bar width
+    var pointerRelativeXpos = e.clientX - wOffLeft - 8;
+
+    var min = 0;
+    var max = window.innerWidth - wOffLeft - 15;
+    
+    resizeTarget.style.width = Math.min(max, Math.max(min, pointerRelativeXpos)) + 'px';
+  }
+});
+
+document.addEventListener('mouseup', function(e) {
+    isResizing = false;
+    docFrame.style["pointer-events"] = "";
+});

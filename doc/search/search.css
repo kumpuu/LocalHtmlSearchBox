@@ -6,14 +6,14 @@
     right: 0;
     bottom: 0;
     left: 0;
-    margin: 10px;
+    margin: 0;
+    padding: 10px;
 }
 
 #searchRootContainer{
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    resize: horizontal;
 }
 
 #searchInput{
@@ -33,7 +33,6 @@
 }
 
 #scrollBox {
-    margin-right: 5px;
     overflow: auto;
     height: 100%;
 }
@@ -88,4 +87,9 @@
     margin-top: 5px;
     padding-top: 5px;
     border-top: 1px solid darkgray;
+}
+
+#resizeBar{
+    width: 16px;
+    cursor: e-resize;
 }
