@@ -237,7 +237,7 @@ var resizeWrapper = resizeBar.parentElement;
 var resizeTarget = document.getElementById("searchRootContainer");
 var isResizing = false;
 
-resizeWrapper.style.width = resizeWrapper.clientWidth + "px"; //set width so it doesnt jump around when results appear
+resizeTarget.style.width = resizeTarget.clientWidth + "px"; //set width so it doesnt jump around when results appear
 
 document.addEventListener('mousedown', function(e) {
   if (e.target === resizeBar) {

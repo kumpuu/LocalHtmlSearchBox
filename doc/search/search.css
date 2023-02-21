@@ -19,7 +19,6 @@
 #searchInput{
     width: auto;%;
     margin-bottom: 10px;
-    margin-right: 10px;
     background-image: url('loading.gif');
     background-size: auto 75%;
     background-position: right center;
