@@ -1,11 +1,10 @@
 # Searchbox for Javadoc
 
-### Dependancy
+### Dependency
 
-Java, I use Java8
-python3
-pip install bs4
-This is used to parse html to python object
+python3  
+pip install bs4  
+&nbsp;&nbsp;This is used to parse html to python object
 
 ### Usage
 
@@ -13,6 +12,8 @@ python gen_javadoc.py directory
 
 Example:
 python gen_javadoc.py ..\build\doc_java\
+
+-> creates ..\build\doc_java\index-searchable.html
 
 ### How it works
 
