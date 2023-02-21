@@ -14,7 +14,7 @@ def run_cmd(cmd):
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        print("Usage: gen_javadoc.py path [-sg (skip javadoc generation)]")
+        print("Usage: gen_javadoc.py path")
         quit()
 
     database_dir = sys.argv[1]
@@ -24,14 +24,6 @@ if __name__ == '__main__':
     if not os.path.exists(database_dir):
         print(database_dir + " is not a valid path")
         quit()
-
-    if not ("-sg" in sys.argv):
-        # Generate java doc by javadoc command
-        run_cmd(r"javadoc -locale en -encoding UTF-8 -charset UTF-8 -sourcepath "
-                + r"../src ../src/main/java/com/chillingvan/docsearcher/Foooo.java ../src/main/java/com/chillingvan/docsearcher/foo/SubFoo.java"
-                + r" -subpackages com  -overview ./overview.html -d ../build/doc_java")
-    else:
-        print("Skipping javadoc generation")
 
     # Read the html documents under /com to generate json data to a .js
     def on_read_file(path, resultArr):
