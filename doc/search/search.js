@@ -26,7 +26,11 @@ function on_data_loaded() {
       lastSearchInput = "";
       updateSearch(inputbox.value);
     }else{
-      debounce(updateSearch, 300)(inputbox.value)
+      var delay = 300;
+      if(inputbox.value.length == 1){delay = 1200}
+      if(inputbox.value.length == 2){delay = 800}
+
+      debounce(updateSearch, delay)(inputbox.value)
     }
   });
 
@@ -122,13 +126,23 @@ function onWorkerDone(e){
 function bestMatchSortBy(left, right, input) {
     leftContent = left.item.content.toLowerCase();
     rightContent = right.item.content.toLowerCase();
+
+    leftURL = left.item.url.toLowerCase();
+    rightURL = right.item.url.toLowerCase();
+
     theSearchContent = input.toLowerCase();
 
-    // 先保证以搜索内容为开头的更容易被搜索到
+    // Make sure that those starting with the search content are easier to be searched
     if (leftContent.startsWith(theSearchContent) && !rightContent.startsWith(theSearchContent)) {
-        return -1;
+      return -1;
     } else if (!leftContent.startsWith(theSearchContent) && rightContent.startsWith(theSearchContent)) {
-        return 1;
+      return 1;
+    }
+
+    if (leftURL.includes(theSearchContent) && !rightURL.includes(theSearchContent)){
+      return -1;
+    }else if (!leftURL.includes(theSearchContent) && rightURL.includes(theSearchContent)) {
+      return 1;
     }
 
     leftDistance = left.leven_dist;

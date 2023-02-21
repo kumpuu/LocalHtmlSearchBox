@@ -37,9 +37,9 @@ def _iterate_nodes(soup, url, level, anchorSet, resultArr, filterArr):
             if not _is_match(filterArr, item):
                 continue
 
-            itemStr = item.strip()
+            itemStr = str(item).strip()
             if itemStr != '' and len(itemStr) >= 3:
-                resultArr.append(_create_item(url, item.string))
+                resultArr.append(_create_item(url, itemStr))
 
 
 def _update_url(url, anchor):
