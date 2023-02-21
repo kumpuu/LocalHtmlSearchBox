@@ -2,7 +2,7 @@ import os
 import sys
 import gen_database as gendb
 import json
-from shutil import copyfile
+from shutil import copyfile, copytree, move
 
 
 def run_cmd(cmd):
@@ -12,37 +12,58 @@ def run_cmd(cmd):
 
 
 if __name__ == '__main__':
-    root_read_dir = sys.argv[1]
-    if root_read_dir[-1] != r"/" or root_read_dir[-1] != "\\":
-        root_read_dir = root_read_dir + "/"
-    # Generate java doc by javadoc command
-    run_cmd(r"javadoc -locale en -encoding UTF-8 -charset UTF-8 -sourcepath "
-            + r"../src ../src/main/java/com/chillingvan/docsearcher/Foooo.java ../src/main/java/com/chillingvan/docsearcher/foo/SubFoo.java"
-            + r" -subpackages com  -overview ./overview.html -d ../build/doc_java")
+    if len(sys.argv) == 1:
+        print("Usage: gen_javadoc.py path [-sg (skip javadoc generation)]")
+        quit()
 
-    # copy js and css to target dir
-    copyfile('search.html', root_read_dir + 'search.html')
-    copyfile('docsearcher.css', root_read_dir + 'docsearcher.css')
-    copyfile('searchlib.js', root_read_dir + 'searchlib.js')
+    database_dir = sys.argv[1]
+    if database_dir[-1] != r"/" or database_dir[-1] != "\\":
+        database_dir = database_dir + "/"
+
+    if not os.path.exists(database_dir):
+        print(database_dir + " is not a valid path")
+        quit()
+
+    if not ("-sg" in sys.argv):
+        # Generate java doc by javadoc command
+        run_cmd(r"javadoc -locale en -encoding UTF-8 -charset UTF-8 -sourcepath "
+                + r"../src ../src/main/java/com/chillingvan/docsearcher/Foooo.java ../src/main/java/com/chillingvan/docsearcher/foo/SubFoo.java"
+                + r" -subpackages com  -overview ./overview.html -d ../build/doc_java")
+    else:
+        print("Skipping javadoc generation")
 
     # Read the html documents under /com to generate json data to a .js
-    database_dir = root_read_dir
-
     def on_read_file(path, resultArr):
         if 'html' in path:
-            url = path[path.index(root_read_dir) + len(root_read_dir):]
+            url = path[path.index(database_dir) + len(database_dir):]
             url = url.replace('\\', '/')
             resultArr.extend(gendb.simple_read_one(path, url))
 
     result_arr = []
-    print("Reading files, may take a while")
-    gendb.read_files(root_read_dir + 'com/', on_read_file, result_arr)
-
-    final_result_arr = []
+    print("Reading files, may take a while...")
+    gendb.read_files(database_dir + 'com/', on_read_file, result_arr)
     gendb.remove_same(result_arr)
+
+    s_dir = database_dir + "search/"
+    copytree("./search", s_dir, dirs_exist_ok=True)
+
     print("Dumping results...")
-    with open(database_dir + 'searchData.js', 'w') as fl:
+    with open(s_dir + 'searchData.js', 'w') as fl:
         fl.write("var searchData = " + json.dumps(result_arr))
         fl.close()
+
+    move(s_dir + "index-searchable.html", database_dir + "index-searchable.html")
+    
+    if os.path.isfile(database_dir + "index.html"):
+        copyfile(database_dir + "index.html", s_dir + "index.html.js")
+        
+        with open(s_dir + "index.html.js", 'r') as original: data = original.read()
+        with open(s_dir + "index.html.js", 'w') as modified:
+            modified.write("//this is a workaround to get around the stupid same-origin policy and enable navigation\n")
+            modified.write("document.getElementById('docFrame').srcdoc = `")
+            modified.write(data)
+            modified.write("`")
+    else:
+        print("Warning: no index.html found")
 
     print("Done")

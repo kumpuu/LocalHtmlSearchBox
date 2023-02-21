@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- NewPage -->
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="search/search.css" />
+  <script async src="search/searchData.js" onload="on_data_loaded()"></script>
+  <script src="search/searchWorker.js"></script>
+</head>
+<body id="rootBody">
+  <div id="searchRootContainer">
+    <input type="text" id="searchInput" placeholder="Loading search data..." x-webkit-speech="" disabled>
+    <div id="scrollBox" onscroll="onSearchListScroll()">
+      <div id="searchListContainer" class="searchListContainer"></div>
+    </div>
+    <div id="footer" style="display: none">
+      <div id="numHits">100 Hits</div>
+      <input id="clear" class="btn" type="button" value="Clear results"/>
+      <input id="loadAll" class="btn" type="button" value="Load All"/>
+    </div>
+  </div>
+  <iframe style="width: 100%;" id="docFrame" src="index.html"></iframe>
+
+  <script src="search/index.html.js"></script>
+  <script src="search/search.js"></script>
+</body>
+</html>
