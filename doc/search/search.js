@@ -10,18 +10,24 @@ var clearBtn = document.getElementById("clear");
 var docFrame = document.getElementById("docFrame");
 
 var searchInput;
-var lastSearchInput;
+var lastSearchInput = "";
 var workers = [];
 var workerResults;
 var numWorkersDone;
 var lastAppendedResult;
+var searchRunning = false;
 
 loadlAllBtn.addEventListener("click", () => lazyAppendResults(true));
 clearBtn.addEventListener("click", () => clearSearch());
 
 function on_data_loaded() {
   inputbox.addEventListener('keyup', function (e) {
-    debounce(updateSearch, 300)(inputbox.value)
+    if(e.keyCode == 13){
+      lastSearchInput = "";
+      updateSearch(inputbox.value);
+    }else{
+      debounce(updateSearch, 300)(inputbox.value)
+    }
   });
 
   inputbox.onfocus = function () {
@@ -34,7 +40,7 @@ function on_data_loaded() {
   show_loading(false);
   inputbox.disabled = false;
 
-  if(inputbox.value != ""){updateSearch(inputbox.value)}
+  updateSearch(inputbox.value);
 }
 
 function show_loading(show) {
@@ -72,8 +78,9 @@ function updateSearch(input){
 }
 
 function doSearch(input){
-  if(input.length < 1) {return}
+  if(input.length < 1 || searchRunning) {return}
 
+  searchRunning = true;
   show_loading(true);
   clearSearch();
   searchInput = input;
@@ -107,6 +114,7 @@ function onWorkerDone(e){
       clearBtn.style.display = "none";
     }
 
+    searchRunning = false;
     show_loading(false);
   }
 }
@@ -211,8 +219,10 @@ function lazyAppendResults(all = false){
   var target = all ? workerResults.length : lastAppendedResult + 100;
 
   while (lastAppendedResult < target && lastAppendedResult < workerResults.length){
-    workerResults[lastAppendedResult].item.content = lastAppendedResult + " " + workerResults[lastAppendedResult].item.content;
-    searchListContainer.appendChild(createSearchItem(searchInput, workerResults[lastAppendedResult].item));
+    var itm = workerResults[lastAppendedResult].item
+    itm.content = (lastAppendedResult + 1) + " " + itm.content;
+
+    searchListContainer.appendChild(createSearchItem(searchInput, itm));
     lastAppendedResult++;
   }
 
@@ -226,6 +236,8 @@ var resizeBar = document.getElementById("resizeBar");
 var resizeWrapper = resizeBar.parentElement;
 var resizeTarget = document.getElementById("searchRootContainer");
 var isResizing = false;
+
+resizeWrapper.style.width = resizeWrapper.clientWidth + "px"; //set width so it doesnt jump around when results appear
 
 document.addEventListener('mousedown', function(e) {
   if (e.target === resizeBar) {
