@@ -3,6 +3,7 @@ import sys
 import gen_database as gendb
 import json
 from shutil import copyfile, copytree, move
+import re
 
 
 def run_cmd(cmd):
@@ -61,7 +62,7 @@ if __name__ == '__main__':
         with open(s_dir + "index.html.js", 'w') as modified:
             modified.write("//this is a workaround to get around the stupid same-origin policy and enable navigation\n")
             modified.write("document.getElementById('docFrame').srcdoc = `")
-            modified.write(data)
+            modified.write(re.sub(r'([\s}>)"])(top\.)', r'\1window.', data)) #replace top references to prevent errors
             modified.write("`")
     else:
         print("Warning: no index.html found")
