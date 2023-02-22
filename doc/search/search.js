@@ -135,13 +135,18 @@ function typeRank(itm){
 }
 
 function bestMatchSortBy(left, right, input) {
-  leftContent = left.item.content.toLowerCase();
-  rightContent = right.item.content.toLowerCase();
+  var leftRank = typeRank(left.item);
+  var rightRank = typeRank(right.item);
 
-  leftURL = left.item.url.toLowerCase();
-  rightURL = right.item.url.toLowerCase();
+  if(leftRank != rightRank){ return rightRank - leftRank }
 
-  theSearchContent = input.toLowerCase();
+  var leftContent = left.item.content.toLowerCase();
+  var rightContent = right.item.content.toLowerCase();
+
+  var leftURL = left.item.url.toLowerCase();
+  var rightURL = right.item.url.toLowerCase();
+
+  var theSearchContent = input.toLowerCase();
 
   // Make sure that those starting with the search content are easier to be searched
   if (leftContent.startsWith(theSearchContent) && !rightContent.startsWith(theSearchContent)) {
@@ -156,8 +161,8 @@ function bestMatchSortBy(left, right, input) {
     return 1;
   }
 
-  leftDistance = left.leven_dist;
-  rightDistance = right.leven_dist;
+  var leftDistance = left.leven_dist;
+  var rightDistance = right.leven_dist;
 
   if(leftDistance == undefined) {
       leftDistance = 0;
@@ -169,13 +174,13 @@ function bestMatchSortBy(left, right, input) {
 }
 
 function createSearchItem(searchContent, jsonItem) {
-    content = jsonItem.content;
-    url = jsonItem.url;
+    var content = jsonItem.content;
+    var url = jsonItem.url;
 
-    container = document.createElement('ul');
+    var container = document.createElement('ul');
     container.setAttribute('class','searchContent');
 
-    contentView = document.createElement('li');
+    var contentView = document.createElement('li');
     contentView.innerHTML = highLightKeyWord(searchContent, content);
     //urlView = document.createElement('div');
 

@@ -23,8 +23,8 @@ var searchWorkerURL;
           return 0;
       }
 
-      leftLen = leftStr.length; 
-      rightLen = rightStr.length;
+      var leftLen = leftStr.length; 
+      var rightLen = rightStr.length;
 
       if (leftLen == 0) {
           return rightLen;
@@ -41,13 +41,13 @@ var searchWorkerURL;
           rightLen = rightStr.length;
       }
 
-      previousCostArr = []; //'previous' cost array, horizontally
-      costArr = []; // cost array, horizontally
-      placeholderForSwappingCostArr = []; //placeholder to assist in swapping previousCostArr and costArr
+      var previousCostArr = []; //'previous' cost array, horizontally
+      var costArr = []; // cost array, horizontally
+      var placeholderForSwappingCostArr = []; //placeholder to assist in swapping previousCostArr and costArr
 
-      rightStr_j = "";
+      var rightStr_j = "";
 
-      cost = 0; // cost
+      var cost = 0; // cost
 
       for (i = 0; i <= leftLen; i++) {
           previousCostArr[i] = i;
