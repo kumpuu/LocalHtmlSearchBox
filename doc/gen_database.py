@@ -1,10 +1,11 @@
 # coding: utf-8
 from bs4 import BeautifulSoup
 import bs4
-
 import os
 import sys
+import re
 
+pattern = re.compile(r"^(Interface|Class|Enum) (.+)$")
 
 def read_one_file(url, inputContent, resultArr, filterArr):
     soup = BeautifulSoup(inputContent, features="html.parser")
@@ -22,25 +23,45 @@ def _iterate_nodes(soup, url, level, anchorSet, resultArr, filterArr):
                 attrHref = item.attrs['href']
                 if '#' in attrHref:
                     anchorSet.add(attrHref[attrHref.index('#')+1:])
+
             # change url
             if item.attrs.__contains__('id'):
                 itemId = item.attrs['id']
                 if itemId in anchorSet:
                     url = _update_url(url, itemId)
+
             # change url
             if item.name == 'a' and item.attrs.__contains__('name'):
                 url = _update_url(url, item.attrs['name'])
 
             # Continue iterate
             _iterate_nodes(item, url, level+1, anchorSet, resultArr, filterArr)
+
         if item is not None and isinstance(item, bs4.element.NavigableString):
             if not _is_match(filterArr, item):
                 continue
 
             itemStr = str(item).strip()
-            if itemStr != '' and len(itemStr) >= 3:
-                resultArr.append(_create_item(url, itemStr))
 
+            if itemStr != "" and len(itemStr) >= 3:
+                _type = findItemType(item, url, itemStr)
+                resultArr.append(_create_item(url, itemStr, _type))
+
+def findItemType(item, url, itemStr):
+    if (itemStr.replace(".", "/") + "/package-frame.html") == url:
+        return "pkg"
+
+    match = pattern.match(itemStr)
+    if match:
+        ty = match.group(1)
+        name = match.group(2)
+
+        if url.endswith("/" + name + ".html"):
+            p = item.parent
+            if p.name == "h2" and "title" in p["class"]:
+                return ty[:3].lower()
+
+    return None
 
 def _update_url(url, anchor):
     if '#' in url:
@@ -48,18 +69,18 @@ def _update_url(url, anchor):
     url = url + '#' + anchor
     return url
 
-
 def _is_match(filter_arr, node):
     for nodefilter in filter_arr:
         if not nodefilter(node):
             return False
     return True
 
-
-def _create_item(url, content):
+def _create_item(url, content, _type):
     makeJson = {}
     makeJson['url'] = url
     makeJson['content'] = content
+    if not _type is None:
+        makeJson['type'] = _type
     return makeJson
 
 def progress_bar(caption, current, total, bar_length=20):
@@ -78,6 +99,12 @@ def remove_same(srcArr):
 
     list.sort(srcArr, key=s_key)
 
+    def cmp_key(key, a, b):
+        val_a = a[key] if key in a else None
+        val_b = b[key] if key in b else None
+
+        return val_a == val_b
+
     i = 0
     while i < len(srcArr) - 1:
         progress_bar("Checking dupes", i, len(srcArr))
@@ -91,7 +118,7 @@ def remove_same(srcArr):
             if nxt_item['url'] != item['url']:
                 break
 
-            if nxt_item['content'] == item['content']:
+            if (nxt_item['content'] == item['content']) and cmp_key('type', nxt_item, item):
                 srcArr.pop(j)
                 continue
                 

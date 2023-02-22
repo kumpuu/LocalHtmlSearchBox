@@ -123,38 +123,49 @@ function onWorkerDone(e){
   }
 }
 
+function typeRank(itm){
+  if ("type" in itm){
+    if(itm.type == "enu") { return 1 } //enum
+    if(itm.type == "cla") { return 2 } //class
+    if(itm.type == "int") { return 3 } //interface
+    if(itm.type == "pkg") { return 4 } //package
+  }
+
+  return 0;
+}
+
 function bestMatchSortBy(left, right, input) {
-    leftContent = left.item.content.toLowerCase();
-    rightContent = right.item.content.toLowerCase();
+  leftContent = left.item.content.toLowerCase();
+  rightContent = right.item.content.toLowerCase();
 
-    leftURL = left.item.url.toLowerCase();
-    rightURL = right.item.url.toLowerCase();
+  leftURL = left.item.url.toLowerCase();
+  rightURL = right.item.url.toLowerCase();
 
-    theSearchContent = input.toLowerCase();
+  theSearchContent = input.toLowerCase();
 
-    // Make sure that those starting with the search content are easier to be searched
-    if (leftContent.startsWith(theSearchContent) && !rightContent.startsWith(theSearchContent)) {
-      return -1;
-    } else if (!leftContent.startsWith(theSearchContent) && rightContent.startsWith(theSearchContent)) {
-      return 1;
-    }
+  // Make sure that those starting with the search content are easier to be searched
+  if (leftContent.startsWith(theSearchContent) && !rightContent.startsWith(theSearchContent)) {
+    return -1;
+  } else if (!leftContent.startsWith(theSearchContent) && rightContent.startsWith(theSearchContent)) {
+    return 1;
+  }
 
-    if (leftURL.includes(theSearchContent) && !rightURL.includes(theSearchContent)){
-      return -1;
-    }else if (!leftURL.includes(theSearchContent) && rightURL.includes(theSearchContent)) {
-      return 1;
-    }
+  if (leftURL.includes(theSearchContent) && !rightURL.includes(theSearchContent)){
+    return -1;
+  }else if (!leftURL.includes(theSearchContent) && rightURL.includes(theSearchContent)) {
+    return 1;
+  }
 
-    leftDistance = left.leven_dist;
-    rightDistance = right.leven_dist;
+  leftDistance = left.leven_dist;
+  rightDistance = right.leven_dist;
 
-    if(leftDistance == undefined) {
-        leftDistance = 0;
-    }
-    if(rightDistance == undefined) {
-        rightDistance = 0;
-    }
-    return leftDistance - rightDistance;
+  if(leftDistance == undefined) {
+      leftDistance = 0;
+  }
+  if(rightDistance == undefined) {
+      rightDistance = 0;
+  }
+  return leftDistance - rightDistance;
 }
 
 function createSearchItem(searchContent, jsonItem) {
