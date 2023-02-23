@@ -3,6 +3,8 @@
 <html lang="en">
 <head>
   <link rel="stylesheet" href="search/search.css" />
+  <link rel="stylesheet" href="search/dark.css"/>
+  <script type="text/javascript">document.styleSheets.item(1).disabled = true</script>
   <script async src="search/searchData.js" onload="on_data_loaded()"></script>
   <script src="search/searchWorker.js"></script>
 </head>
@@ -17,6 +19,7 @@
         <div id="numHits">100 Hits</div>
         <input id="clear" class="btn" type="button" value="Clear results"/>
         <input id="loadAll" class="btn" type="button" value="Load All"/>
+        <input id="theme" class="btn" type="button" value="Theme"/>
       </div>
     </div>
     <div id="resizeBar"></div>
