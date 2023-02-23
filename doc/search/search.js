@@ -1,5 +1,6 @@
 var inputbox = document.getElementById('searchInput');
 var scrollBox = document.getElementById('scrollBox');
+var searchRootContainer = document.getElementById('searchRootContainer');
 var searchListContainer = document.getElementById('searchListContainer');
 
 var footer = document.getElementById("footer");
@@ -173,7 +174,7 @@ function bestMatchSortBy(left, right, input) {
   return leftDistance - rightDistance;
 }
 
-function createSearchItem(searchContent, jsonItem, number) {
+function createSearchItem(searchInput, jsonItem, number) {
     var content = jsonItem.content;
     var url = jsonItem.url;
 
@@ -181,7 +182,7 @@ function createSearchItem(searchContent, jsonItem, number) {
     container.setAttribute('class','searchHit');
 
       var container2 = document.createElement('div');
-        container2.innerHTML = highLightKeyWord(searchContent, content);
+        container2.innerHTML = highLightKeyWords(content, searchInput, jsonItem.type);
         
         var urlView = document.createElement('div');
         urlView.setAttribute('class','searchUrl');
@@ -235,17 +236,21 @@ function clearSearch() {
   footer.style.display = "none";
 }
 
-function highLightKeyWord(keyword, targetContent) { 
-    /* 获取需要处理的关键字 */ 
-    var resultHtml = targetContent; 
-    /* 关键字替换文本 该文本设置有高亮颜色 */ 
-    var replaceText = "<font style='color:red;'>$1</font>"; 
-    /* 关键字正则匹配规则 */ 
-    var r = new RegExp("(" + keyword + ")", "ig"); 
-    /* 将匹配到的关键字替换成我们预设的文本 */ 
-    resultHtml = resultHtml.replace(r, replaceText); 
-    /* 用于innerHTML */ 
-    return resultHtml;
+function highLightKeyWords(content, keyword, type) { 
+  var key_reg = new RegExp("(" + keyword + ")", "ig"); 
+  var key_repl = "<span class='hit_keyword'>$1</span>"; 
+
+  if(type !== undefined){
+    let re = new RegExp("^(.+?) (.+)$");
+    var match = content.match(re);
+
+    if(match && match.length == 3){
+      return "<span class='hit_" + type + "'>" + match[1] + " </span>" +
+        match[2].replace(key_reg, key_repl);
+    }
+  }
+  
+  return content.replace(key_reg, key_repl); 
 }
 
 function onSearchListScroll(e){
@@ -281,6 +286,7 @@ document.addEventListener('mousedown', function(e) {
   if (e.target === resizeBar) {
     isResizing = true;
     docFrame.style["pointer-events"] = "none";
+    searchRootContainer.style["user-select"] = "none";
   }
 });
 
@@ -303,4 +309,5 @@ document.addEventListener('mousemove', function(e) {
 document.addEventListener('mouseup', function(e) {
     isResizing = false;
     docFrame.style["pointer-events"] = "";
+    searchRootContainer.style["user-select"] = "";
 });
