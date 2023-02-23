@@ -173,19 +173,28 @@ function bestMatchSortBy(left, right, input) {
   return leftDistance - rightDistance;
 }
 
-function createSearchItem(searchContent, jsonItem) {
+function createSearchItem(searchContent, jsonItem, number) {
     var content = jsonItem.content;
     var url = jsonItem.url;
 
-    var container = document.createElement('ul');
-    container.setAttribute('class','searchContent');
+    var container = document.createElement('div');
+    container.setAttribute('class','searchHit');
 
-    var contentView = document.createElement('li');
-    contentView.innerHTML = highLightKeyWord(searchContent, content);
-    //urlView = document.createElement('div');
+      var container2 = document.createElement('div');
+        container2.innerHTML = highLightKeyWord(searchContent, content);
+        
+        var urlView = document.createElement('div');
+        urlView.setAttribute('class','searchUrl');
+        urlView.textContent = url;
 
-    container.appendChild(contentView);
-    container.append(url);
+        container2.appendChild(urlView);
+
+      var contentNum = document.createElement('div');
+      contentNum.setAttribute('class','searchNum');
+      contentNum.textContent = number.toString();
+
+    container.appendChild(container2);
+    container.appendChild(contentNum);
 
     container.addEventListener('click', ((_url) => {return (e) => {
       try{
@@ -250,9 +259,8 @@ function lazyAppendResults(all = false){
 
   while (lastAppendedResult < target && lastAppendedResult < workerResults.length){
     var itm = workerResults[lastAppendedResult].item
-    itm.content = (lastAppendedResult + 1) + " " + itm.content;
 
-    searchListContainer.appendChild(createSearchItem(searchInput, itm));
+    searchListContainer.appendChild(createSearchItem(searchInput, itm, lastAppendedResult + 1));
     lastAppendedResult++;
   }
 

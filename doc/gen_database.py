@@ -44,8 +44,9 @@ def _iterate_nodes(soup, url, level, anchorSet, resultArr, filterArr):
             itemStr = str(item).strip()
 
             if itemStr != "" and len(itemStr) >= 3:
-                _type = findItemType(item, url, itemStr)
-                resultArr.append(_create_item(url, itemStr, _type))
+                if not (itemStr.startswith("<!--") and itemStr.endswith("-->")): #ignore html comment
+                    _type = findItemType(item, url, itemStr)
+                    resultArr.append(_create_item(url, itemStr, _type))
 
 def findItemType(item, url, itemStr):
     if (itemStr.replace(".", "/") + "/package-frame.html") == url:
