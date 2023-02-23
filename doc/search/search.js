@@ -7,6 +7,7 @@ var footer = document.getElementById("footer");
 var hitsText = document.getElementById("numHits")
 var loadlAllBtn = document.getElementById("loadAll");
 var clearBtn = document.getElementById("clear");
+var themeBtn = document.getElementById("theme");
 
 var docFrame = document.getElementById("docFrame");
 
@@ -19,7 +20,8 @@ var lastAppendedResult;
 var searchRunning = false;
 
 loadlAllBtn.addEventListener("click", () => lazyAppendResults(true));
-clearBtn.addEventListener("click", () => clearSearch());
+clearBtn.addEventListener("click", clearSearch);
+themeBtn.addEventListener("click", switchTheme);
 
 function on_data_loaded() {
   inputbox.addEventListener('keyup', function (e) {
@@ -311,3 +313,13 @@ document.addEventListener('mouseup', function(e) {
     docFrame.style["pointer-events"] = "";
     searchRootContainer.style["user-select"] = "";
 });
+
+function switchTheme(){
+  for (var i=0; i < document.styleSheets.length; i++) {
+    var sheet = document.styleSheets.item(i);
+
+    if(sheet.ownerNode.attributes["href"].value == "search/dark.css"){
+      void(sheet.disabled = !sheet.disabled);
+    }
+  }
+}

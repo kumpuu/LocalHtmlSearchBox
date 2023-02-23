@@ -1,0 +1,54 @@
+#rootBody{
+    background-color: #252526;
+}
+
+#searchInput{
+    background-color: #3c3c3c;
+    border: 1px solid #3c3c3c;
+    color: #bfb8a9;
+}
+
+#searchInput:focus {
+    background-color: #3c3c3c;
+    border: 1px solid #316ab7;
+    color: #bfb8a9;
+}
+
+#searchListContainer {
+    background-color: #1e1e1e;
+}
+
+.searchHit {
+    color: #b9bdbb;
+    border-bottom: 1px solid #353535;
+}
+
+.searchHit:hover {
+    color: #b9bdbb;
+    background-color: #2a2d2f;
+}
+
+.searchNum{
+    color: #656a67;
+}
+
+.searchUrl{
+    color: #6a6a6a;
+}
+
+.hit_keyword{
+    background-color: #732f1f;
+}
+
+.hit_int, .hit_cla, .hit_enu, .hit_pkg{
+    color: #0a86bd;
+}
+
+#loadingIndicator{
+    background-image: url("loading.gif");
+}
+
+#footer{
+    border-top: 1px solid darkgray;
+    color: #777777;
+}

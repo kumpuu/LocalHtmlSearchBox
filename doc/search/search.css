@@ -18,7 +18,7 @@
 }
 
 #searchInput{
-    width: auto;%;
+    width: auto;
     margin-bottom: 10px;
     background-image: url('loading.gif');
     background-size: auto 75%;
@@ -57,7 +57,7 @@
 }
 
 .searchHit:hover {
-    background: #e8e8e8;
+    background-color: #e8e8e8;
     cursor: pointer;
 }
 
