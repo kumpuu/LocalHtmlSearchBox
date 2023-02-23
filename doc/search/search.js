@@ -125,10 +125,10 @@ function onWorkerDone(e){
 
 function typeRank(itm){
   if ("type" in itm){
-    if(itm.type == "enu") { return 1 } //enum
-    if(itm.type == "cla") { return 2 } //class
-    if(itm.type == "int") { return 3 } //interface
-    if(itm.type == "pkg") { return 4 } //package
+    if(itm.type == "int") { return 4 } //interface
+    if(itm.type == "cla") { return 3 } //class
+    if(itm.type == "enu") { return 2 } //enum
+    if(itm.type == "pkg") { return 1 } //package
   }
 
   return 0;
