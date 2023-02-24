@@ -41,7 +41,8 @@ def _iterate_nodes(soup, url, level, anchorSet, resultArr, filterArr):
             if not _is_match(filterArr, item):
                 continue
 
-            itemStr = str(item).strip()
+            itemStr = str(item).strip() #remove leading and trailing spaces
+            itemStr = itemStr.replace(u'\xa0', ' ') #remove &nbsp; - non breaking space
 
             if itemStr != "" and len(itemStr) >= 3:
                 if not (itemStr.startswith("<!--") and itemStr.endswith("-->")): #ignore html comment

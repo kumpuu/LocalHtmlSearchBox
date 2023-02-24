@@ -184,7 +184,7 @@ function createSearchItem(searchInput, jsonItem, number) {
     container.setAttribute('class','searchHit');
 
       var container2 = document.createElement('div');
-        container2.innerHTML = highLightKeyWords(content, searchInput, jsonItem.type);
+        container2.innerHTML = getContentHtml(content, searchInput, jsonItem.type);
         
         var urlView = document.createElement('div');
         urlView.setAttribute('class','searchUrl');
@@ -238,11 +238,18 @@ function clearSearch() {
   footer.style.display = "none";
 }
 
-function highLightKeyWords(content, keyword, type) { 
+function getContentHtml(content, keyword, type) {
+  content = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"); //these characters break the html
+  keyword = keyword.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"); //we must do the same for keyword or the .replace will fail
+
+  keyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); //keyword may contain special characters which mess up the regEx
+
   var key_reg = new RegExp("(" + keyword + ")", "ig"); 
-  var key_repl = "<span class='hit_keyword'>$1</span>"; 
+  var key_repl = "<span class='hit_keyword'>$1</span>";
 
   if(type !== undefined){
+    //we have a type, so content should be e.g. "Class xyz". Wrap "Class" in span
+
     let re = new RegExp("^(.+?) (.+)$");
     var match = content.match(re);
 

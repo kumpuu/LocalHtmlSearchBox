@@ -52,3 +52,22 @@
     border-top: 1px solid darkgray;
     color: #777777;
 }
+
+#scrollBox{
+    scrollbar-color: #555555 rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar
+{
+  width: 12px;
+}
+
+::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: #555555;
+}
